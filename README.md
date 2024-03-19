@@ -1,0 +1,1 @@
+# Aseprite-Template-Layer-Script
