@@ -101,11 +101,25 @@ function layerSearch(layers)
     return Outlayers
 end
 
+function celsGathering(layer)
+    local cels = {}
+
+    for i, cel in ipairs(layer.cels) do
+        local index = #cels
+        cels[index+1] = {
+            frame = cel.frameNumber,
+            order = cel.zIndex
+        }
+    end
+    return cels
+end
+
 function layerGathering(layer)
     return {
         isGroup = false,
         layerName = layer.name,
-        layerColoer = layer.color
+        layerColoer = layer.color,
+        cels = celsGathering(layer)
     }
 end
 
@@ -141,7 +155,12 @@ end
 dict.layers = layerSearch(s.layers)
 
 
+-- export as json
 ---[[
 local text = json.encode(dict)
-app.alert(text)
+local jsonObj = json.decode(text)
+local exportPath = "C:/Users/RimsE/Documents/Aseprite/Assets/Character/Demo.json"
+local f = io.open(exportPath, 'w')
+f:write(text)
+f:close()
 --]]
