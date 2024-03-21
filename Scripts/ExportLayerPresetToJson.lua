@@ -1,3 +1,4 @@
+
 --[[
  Export data set
  - Layer and group
@@ -80,6 +81,9 @@ local dict = {
     -- cell include zOrder
     layers = {
 
+    },
+    frames = {
+
     }
 }
 
@@ -119,6 +123,7 @@ function layerGathering(layer)
         isGroup = false,
         layerName = layer.name,
         layerColoer = layer.color,
+        layerOpacity = layer.opacity,
         cels = celsGathering(layer)
     }
 end
@@ -128,6 +133,7 @@ function groupGathering(group)
         isGroup = true,
         layerName = group.name,
         layerColoer = group.color,
+        layerOpacity = group.opacity,
         layers = layerSearch(group.layers)
     }
 end
@@ -142,6 +148,14 @@ for i, tag in ipairs(s.tags) do
         tagName = tag.name,
         fromFrame = tag.fromFrame.frameNumber,
         toFrame = tag.toFrame.frameNumber
+    }
+end
+
+for i, frame in ipairs(s.frames) do
+    local frameNum = #dict.frames
+    dict.frames[frameNum+1] = {
+        frameNumber = frame.frameNumber,
+        frameDuration = frame.duration
     }
 end
 
