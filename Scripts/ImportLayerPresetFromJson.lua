@@ -1,5 +1,17 @@
 local s = app.activeSprite
 
+
+function getColor(color)
+    local nColor
+    if color == null then
+        nColor = Color{ r=0, g=0, b=0, a=0 }
+    else
+        nColor = color
+    end
+
+    return nColor
+end
+
 function updateCels(layer, layerTable)
 --[[
     for i, cel in ipairs(layer.cels) do
@@ -13,20 +25,10 @@ function updateCels(layer, layerTable)
         for j, cel in ipairs(cels) do
             if (cel.frameNumber == celData.frame) then
                 cel.zIndex = celData.order
+                cel.color = getColor(celData.color)
             end 
         end
     end
-end
-
-function getLayerColor(color)
-    local nColor
-    if color == null then
-        nColor = Color{ r=0, g=0, b=0, a=0 }
-    else
-        nColor = color
-    end
-
-    return nColor
 end
 
 function getOrCreateLayer(searchLayers, layerName)
@@ -54,7 +56,7 @@ function constructGroup(searchLayers, groupTable)
     end
     
     nGroup.name = groupTable.layerName
-    nGroup.color = getLayerColor(groupTable.layerColoer)
+    nGroup.color = getColor(groupTable.layerColoer)
 
     -- add sublayers.
     for i, layer in ipairs(groupTable.layers) do
@@ -80,7 +82,7 @@ function constructPureLayer(searchLayers, layerTable)
 
     -- update settings
     nLayer.name = layerTable.layerName
-    nLayer.color = getLayerColor(layerTable.layerColoer)
+    nLayer.color = getColor(layerTable.layerColoer)
 
     -- update cell data
     updateCels(nLayer, layerTable)
