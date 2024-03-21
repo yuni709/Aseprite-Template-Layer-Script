@@ -1,4 +1,4 @@
--- only update cel order. not adding or removing a layer.local exportPath = "C:/Users/RimsE/Documents/Aseprite/Assets/Character/Demo.json"
+
 local s = app.activeSprite
 
 local exportPath = "C:/Users/RimsE/Documents/Aseprite/Assets/Character/Demo.json"

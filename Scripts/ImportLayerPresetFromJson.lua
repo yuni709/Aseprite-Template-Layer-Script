@@ -1,5 +1,23 @@
 local s = app.activeSprite
 
+function updateCels(layer, layerTable)
+--[[
+    for i, cel in ipairs(layer.cels) do
+        cel.zIndex = layerTable.cels[1].order
+    end
+--]]
+    for i, celData in ipairs(layerTable.cels) do
+        local cels = layer.cels
+
+        -- find matching cel with frame
+        for j, cel in ipairs(cels) do
+            if (cel.frameNumber == celData.frame) then
+                cel.zIndex = celData.order
+            end 
+        end
+    end
+end
+
 function getLayerColor(color)
     local nColor
     if color == null then
@@ -65,6 +83,7 @@ function constructPureLayer(searchLayers, layerTable)
     nLayer.color = getLayerColor(layerTable.layerColoer)
 
     -- update cell data
+    updateCels(nLayer, layerTable)
 
     -- return layer.
     return nLayer
