@@ -1,10 +1,21 @@
 local s = app.activeSprite
 
+function getLayerColor(color)
+    local nColor
+    if color == null then
+        nColor = Color{ r=0, g=0, b=0, a=0 }
+    else
+        nColor = color
+    end
+
+    return nColor
+end
+
 function constructGroup(groupTable)
     -- new group.
     local nGroup = s:newGroup()
     nGroup.name = groupTable.layerName
-    nGroup.color = groupTable.layerColoer
+    nGroup.color = getLayerColor(groupTable.layerColoer)
 
     -- add sublayers.
     for i, layer in ipairs(groupTable.layers) do
@@ -20,7 +31,7 @@ function constructPureLayer(layerTable)
     -- new layer.
     local nLayer = s:newLayer()
     nLayer.name = layerTable.layerName
-    nLayer.color = layerTable.layerColoer
+    nLayer.color = getLayerColor(layerTable.layerColoer)
 
     -- update cell data
 
@@ -72,10 +83,33 @@ end
 --]]
 
 -- create tags
+function getOrCreateTag(tagTable)
+    local found
+    local foundTag
+    -- search tag that matche name.
+    -- should dictingish same name tag in different direction
+    for i, tag in ipairs(s.tags) do
+        if tag.name == tagTable.tagName then
+            found = true
+            foundTag = tag
+            break
+        end
+    end
+
+    -- return found result or new tag.
+    if found == true then
+        return foundTag
+    else
+        return s:newTag(--[[tag.fromFrame, tag.toFrame]])
+    end
+end
+
 ---[[
 for i, tag in ipairs(dict.tags) do
-    local nTag = s:newTag(tag.fromFrame, tag.toFrame)
+    local nTag = getOrCreateTag(tag)
     nTag.name = tag.tagName
+    nTag.fromFrame = tag.fromFrame
+    nTag.toFrame = tag.toFrame
 end
 --]]
 
