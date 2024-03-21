@@ -11,15 +11,32 @@ function getLayerColor(color)
     return nColor
 end
 
-function constructGroup(groupTable)
+function constructGroup(--[[searchLayers, ]]groupTable)
     -- new group.
+--[[
+    local groupExist
+    local nGroup
+    -- get group if exist
+    for i, searchLayer in ipairs(searchLayers) do
+        if (searchLayers.name == groupTable.layerName) then
+            groupExist = true
+            nGroup = searchLayer
+            break
+        end
+    end
+
+    if groupExist ~= true then
+        nGroup = s:newGroup()
+    end
+--]]
     local nGroup = s:newGroup()
+    
     nGroup.name = groupTable.layerName
     nGroup.color = getLayerColor(groupTable.layerColoer)
 
     -- add sublayers.
     for i, layer in ipairs(groupTable.layers) do
-        local nLayer = constructLayer(groupTable.layers[i])
+        local nLayer = constructLayer(--[[nGroup.layers, ]]groupTable.layers[i])
         nLayer.parent = nGroup
     end
 
@@ -27,9 +44,26 @@ function constructGroup(groupTable)
     return nGroup
 end
 
-function constructPureLayer(layerTable)
+function constructPureLayer(--[[searchLayers, ]]layerTable)
+--[[
+    local layerExist
+    local nLayer
+    -- get layer if exist
+    for i, searchLayer in ipairs(searchLayers) do
+        if (searchLayer.name == layerTable.layerName) then
+            layerExist = true
+            nLayer = searchLayer
+            break
+        end
+    end
+
     -- new layer.
+    if layerExist ~= true then
+        nLayer = s:newLayer()
+    end
+--]]
     local nLayer = s:newLayer()
+    -- update settings
     nLayer.name = layerTable.layerName
     nLayer.color = getLayerColor(layerTable.layerColoer)
 
@@ -39,14 +73,14 @@ function constructPureLayer(layerTable)
     return nLayer
 end
 
-function constructLayer(layerTable)
+function constructLayer(--[[searchLayers, ]]layerTable)
 
     -- construct layer.
     local nLayer
     if layerTable.isGroup == true then
-        nLayer = constructGroup(layerTable)
+        nLayer = constructGroup(--[[searchLayers, ]]layerTable) -- or get layer
     else
-        nLayer = constructPureLayer(layerTable)
+        nLayer = constructPureLayer(--[[searchLayers, ]]layerTable) -- or get layer
     end
 
     -- return result.
