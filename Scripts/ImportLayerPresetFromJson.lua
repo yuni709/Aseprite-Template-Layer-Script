@@ -11,32 +11,36 @@ function getLayerColor(color)
     return nColor
 end
 
-function constructGroup(--[[searchLayers, ]]groupTable)
-    -- new group.
---[[
-    local groupExist
-    local nGroup
-    -- get group if exist
-    for i, searchLayer in ipairs(searchLayers) do
-        if (searchLayers.name == groupTable.layerName) then
-            groupExist = true
-            nGroup = searchLayer
-            break
+function getOrCreateLayer(searchLayers, layerName)
+
+    -- return layer if exist.
+    for i, foundLayer in ipairs(searchLayers) do
+        if foundLayer.name == layerName then
+            return true, foundLayer
+
         end
     end
 
-    if groupExist ~= true then
+    return false, nil
+end
+
+function constructGroup(searchLayers, groupTable)
+    -- find group or ner
+    local groupExist
+    local nGroup
+    groupExist, nGroup = getOrCreateLayer(searchLayers, groupTable.layerName)
+
+    -- new group
+    if groupExist == false then
         nGroup = s:newGroup()
     end
---]]
-    local nGroup = s:newGroup()
     
     nGroup.name = groupTable.layerName
     nGroup.color = getLayerColor(groupTable.layerColoer)
 
     -- add sublayers.
     for i, layer in ipairs(groupTable.layers) do
-        local nLayer = constructLayer(--[[nGroup.layers, ]]groupTable.layers[i])
+        local nLayer = constructLayer(nGroup.layers, groupTable.layers[i])
         nLayer.parent = nGroup
     end
 
@@ -44,25 +48,18 @@ function constructGroup(--[[searchLayers, ]]groupTable)
     return nGroup
 end
 
-function constructPureLayer(--[[searchLayers, ]]layerTable)
---[[
+function constructPureLayer(searchLayers, layerTable)
+
+    -- find layer or new
     local layerExist
     local nLayer
-    -- get layer if exist
-    for i, searchLayer in ipairs(searchLayers) do
-        if (searchLayer.name == layerTable.layerName) then
-            layerExist = true
-            nLayer = searchLayer
-            break
-        end
-    end
+    layerExist, nLayer = getOrCreateLayer(searchLayers, layerTable.layerName)
 
     -- new layer.
-    if layerExist ~= true then
+    if layerExist == false then
         nLayer = s:newLayer()
     end
---]]
-    local nLayer = s:newLayer()
+
     -- update settings
     nLayer.name = layerTable.layerName
     nLayer.color = getLayerColor(layerTable.layerColoer)
@@ -73,14 +70,15 @@ function constructPureLayer(--[[searchLayers, ]]layerTable)
     return nLayer
 end
 
-function constructLayer(--[[searchLayers, ]]layerTable)
+function constructLayer(searchLayers, layerTable)
+
+    local nLayer
 
     -- construct layer.
-    local nLayer
     if layerTable.isGroup == true then
-        nLayer = constructGroup(--[[searchLayers, ]]layerTable) -- or get layer
+        nLayer = constructGroup(searchLayers, layerTable)
     else
-        nLayer = constructPureLayer(--[[searchLayers, ]]layerTable) -- or get layer
+        nLayer = constructPureLayer(searchLayers, layerTable) -- or get layer
     end
 
     -- return result.
@@ -149,5 +147,5 @@ end
 
 -- create layers
 for i, layer in ipairs(dict.layers) do
-    constructLayer(layer)
+    constructLayer(s.layers, layer)
 end
