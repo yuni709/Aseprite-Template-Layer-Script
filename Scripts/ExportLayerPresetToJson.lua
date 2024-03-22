@@ -112,7 +112,7 @@ function celsGathering(layer)
         local index = #cels
         cels[index+1] = {
             frame = cel.frameNumber,
-            order = cel.zIndex
+            order = cel.zIndex,
             color = cel.color
         }
     end
